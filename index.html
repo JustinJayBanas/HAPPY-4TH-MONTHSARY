@@ -35,37 +35,37 @@
     right: 20px;
     background: rgba(255,255,255,0.05);
     backdrop-filter: blur(15px);
-    padding: 20px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
+    padding: 30px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.15);
     z-index: 100;
-    width: 200px;
+    width: 250px;
   }
-  .guide-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; color: #ff1493; opacity: 0.9; font-weight: bold; }
-  .guide-item { font-size: 0.85rem; margin-bottom: 10px; opacity: 0.4; transition: 0.4s; display: flex; align-items: center; gap: 10px; }
+  .guide-title { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; color: #ff1493; opacity: 0.9; font-weight: bold; }
+  .guide-item { font-size: 1.1rem; margin-bottom: 15px; opacity: 0.4; transition: 0.4s; display: flex; align-items: center; gap: 12px; }
   .guide-item.active { opacity: 1; color: white; transform: translateX(-5px); }
-  .guide-item span { font-size: 1.2rem; }
+  .guide-item span { font-size: 1.5rem; }
 
   .camera-container {
     position: relative;
-    width: 400px;
-    max-width: 90vw;
-    border-radius: 35px;
+    width: 600px;
+    max-width: 95vw;
+    border-radius: 45px;
     overflow: hidden;
-    box-shadow: 0 0 60px rgba(0, 242, 255, 0.15);
+    box-shadow: 0 0 80px rgba(0, 242, 255, 0.25);
     transition: all 1.5s ease;
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.15);
   }
 
   .camera-container.unlocked {
-    box-shadow: 0 0 80px rgba(255, 105, 180, 0.25);
+    box-shadow: 0 0 100px rgba(255, 105, 180, 0.35);
   }
 
   video, canvas {
     width: 100%;
     transform: scaleX(-1);
     display: block;
-    border-radius: 35px;
+    border-radius: 45px;
   }
 
   canvas {
@@ -76,24 +76,24 @@
   }
 
   .messages {
-    margin-top: 25px;
-    width: 85%;
-    max-width: 550px;
+    margin-top: 35px;
+    width: 90%;
+    max-width: 700px;
     text-align: center;
     z-index: 10;
   }
 
   .letter {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 25px;
-    padding: 22px;
-    font-size: 1rem;
-    line-height: 1.6;
-    min-height: 80px;
-    max-height: 300px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px;
+    padding: 30px;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    min-height: 100px;
+    max-height: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     transition: all 0.5s ease;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -104,36 +104,36 @@
   /* 3D Flower Elements */
   .flower {
     position: absolute;
-    font-size: 35px;
+    font-size: 50px;
     pointer-events: none;
     z-index: 99;
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.7));
     animation: bloomFly 3.5s cubic-bezier(0.1, 0, 0.2, 1) forwards;
   }
 
   .flower-stem {
     position: absolute;
-    width: 3px;
-    background: linear-gradient(180deg, rgba(34,177,76,0.8), rgba(34,177,76,0.2));
+    width: 5px;
+    background: linear-gradient(180deg, rgba(34,177,76,0.9), rgba(34,177,76,0.3));
     pointer-events: none;
     z-index: 98;
     transform-origin: bottom center;
-    border-radius: 2px;
+    border-radius: 3px;
   }
 
   .flower-bloom {
     position: absolute;
     pointer-events: none;
     z-index: 99;
-    font-size: 28px;
-    filter: drop-shadow(0 0 8px rgba(255,255,255,0.6));
+    font-size: 40px;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.7));
     animation: growFlower 2.5s ease-out forwards;
   }
 
   @keyframes bloomFly {
     0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
     15% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(15deg); }
-    100% { transform: translate(var(--mx), var(--my)) scale(1.8) rotate(var(--rt)); opacity: 0; }
+    100% { transform: translate(var(--mx), var(--my)) scale(2.2) rotate(var(--rt)); opacity: 0; }
   }
 
   @keyframes growFlower {
@@ -143,8 +143,8 @@
   }
 
   @keyframes growStem {
-    0% { height: 0; opacity: 0.6; }
-    50% { opacity: 0.8; }
+    0% { height: 0; opacity: 0.7; }
+    50% { opacity: 0.9; }
     100% { height: var(--stem-height); opacity: 0; }
   }
 
@@ -152,43 +152,43 @@
     position: absolute;
     pointer-events: none;
     z-index: 99;
-    font-size: 30px;
-    filter: drop-shadow(0 0 10px rgba(255,105,180,0.8));
+    font-size: 50px;
+    filter: drop-shadow(0 0 15px rgba(255,105,180,0.9));
     animation: growHeart 2.8s ease-out forwards;
   }
 
   @keyframes growHeart {
     0% { transform: translate(-50%, -50%) scale(0) rotateZ(0deg); opacity: 0; }
     10% { opacity: 1; }
-    100% { transform: translate(-50%, calc(-50% + var(--my))) scale(1.2) rotateZ(var(--rt)); opacity: 0; }
-  }
-
-  .heart-pop {
-    position: absolute;
-    font-size: 25px;
-    animation: popUp 1.5s ease-out forwards;
-    pointer-events: none;
-  }
-
-  @keyframes popUp {
-    0% { transform: scale(0); opacity: 1; }
-    100% { transform: translateY(-100px) scale(2); opacity: 0; }
+    100% { transform: translate(-50%, calc(-50% + var(--my))) scale(1.4) rotateZ(var(--rt)); opacity: 0; }
   }
 
   .floating-image {
     position: absolute;
     pointer-events: none;
     z-index: 97;
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(255, 20, 147, 0.6);
+    border-radius: 20px;
+    box-shadow: 0 0 35px rgba(255, 20, 147, 0.8);
     animation: floatImage 4s ease-out forwards;
     overflow: hidden;
+    /* Updated Size */
+    width: 180px; 
+    height: 180px;
+    object-fit: cover;
+    border: 4px solid white;
   }
 
   @keyframes floatImage {
     0% { transform: translate(-50%, -50%) scale(0) rotateZ(0deg); opacity: 0; }
     15% { opacity: 1; }
     100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(1) rotateZ(var(--rt)); opacity: 0; }
+  }
+
+  /* Hidden Middle Finger Pop */
+  @keyframes popMiddle {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
   }
 </style>
 </head>
@@ -241,8 +241,8 @@ function spawnImage(x, y) {
   const img = document.createElement('img');
   img.className = 'floating-image';
   img.src = pictures[Math.floor(Math.random() * pictures.length)];
-  img.width = 100;
-  img.height = 100;
+  
+  // Handled size via CSS class .floating-image
   img.style.left = x + 'px';
   img.style.top = y + 'px';
   img.style.setProperty('--mx', (Math.random() - 0.5) * 500 + 'px');
@@ -259,10 +259,9 @@ function updateGuide(activeId) {
 }
 
 function spawnFlower(x, y) {
-  const flowerEmojis = ['�', '🌻', '🌸', '🌺', '🌷', '💐'];
+  const flowerEmojis = ['🌻', '🌸', '🌺', '🌷', '💐'];
   const stemHeight = Math.random() * 80 + 40; // 40-120px stems
   
-  // Create stem
   const stem = document.createElement('div');
   stem.className = 'flower-stem';
   stem.style.left = x + 'px';
@@ -271,7 +270,6 @@ function spawnFlower(x, y) {
   stem.style.animation = `growStem 2.5s ease-out forwards`;
   document.body.appendChild(stem);
   
-  // Create flower bloom at the top
   const bloom = document.createElement('div');
   bloom.className = 'flower-bloom';
   bloom.innerHTML = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
@@ -350,12 +348,10 @@ hands.onResults(results => {
       ctx.lineTo(lm[j].x*canvas.width, lm[j].y*canvas.height); ctx.stroke();
     });
 
-    // Interaction Positioning
     const rect = canvas.getBoundingClientRect();
     const indexX = rect.left + (1 - lm[8].x) * rect.width;
     const indexY = rect.top + lm[8].y * rect.height;
 
-    // Gesture Logic
     const isIndexUp = lm[8].y < lm[6].y;
     const isMiddleUp = lm[12].y < lm[10].y;
     const isRingUp = lm[16].y < lm[14].y;
@@ -383,42 +379,65 @@ hands.onResults(results => {
     // STAGE 2: Peace Sign (Flowers) - Sprouting Flowers
     if (stage === 2) {
       if (isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp) {
-        // Spawn multiple flowers for sprouting effect
         for (let i = 0; i < 3; i++) {
           if (Math.random() > 0.4) {
-            const offsetX = indexX + (Math.random() - 0.5) * 50;
-            const offsetY = indexY + (Math.random() - 0.5) * 50;
-            spawnFlower(offsetX, offsetY);
+            spawnFlower(indexX + (Math.random()-0.5)*50, indexY + (Math.random()-0.5)*50);
           }
         }
         updateGuide('g3');
       }
-      
+
       // Thumbs Up (Show Floating Images)
       const thumbUpCheck = lm[4].y < lm[2].y && !isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp;
       if (thumbUpCheck) {
         const now = Date.now();
-        if (now - lastImageTime > 800) { // Spawn every 0.8+ seconds
+        if (now - lastImageTime > 800) {
           for (let i = 0; i < 2; i++) {
-            spawnImage(indexX + (Math.random() - 0.5) * 40, indexY + (Math.random() - 0.5) * 40);
+            spawnImage(indexX + (Math.random()-0.5)*40, indexY + (Math.random()-0.5)*40);
           }
           lastImageTime = now;
         }
         updateGuide('g4');
       }
-      
-      // OK Sign (Thumb and Index close, others up)
+
+      // OK Sign
       const okDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
       if (okDist < 0.05 && isMiddleUp && isRingUp && isPinkyUp) {
         if (Math.random() > 0.75) spawnHeart(indexX, indexY);
         updateGuide('g6');
       }
-      
-      // Wave gesture (Hand moving side to side with index up)
-      const handVelocity = results.multiHandWorldLandmarks ? Math.abs(results.multiHandWorldLandmarks[0][9].x - lm[9].x) : 0;
+
+      // Wave gesture
       if (isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp) {
         if (Math.random() > 0.9) spawnSpark(indexX, indexY);
       }
+
+      // Hidden Middle Finger Gesture
+      const isOnlyMiddleUp = !isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp;
+      if (isOnlyMiddleUp) {
+        if (!document.getElementById('middlePop')) {
+          const pop = document.createElement('div');
+          pop.id = 'middlePop';
+          pop.innerText = "Huli, tig try pa talaga HAHAHAHA";
+          pop.style.position = 'fixed';
+          pop.style.top = '50%';
+          pop.style.left = '50%';
+          pop.style.transform = 'translate(-50%, -50%)';
+          pop.style.background = 'rgba(255,0,0,0.9)';
+          pop.style.color = 'white';
+          pop.style.fontSize = '1.8rem';
+          pop.style.padding = '25px 40px';
+          pop.style.borderRadius = '25px';
+          pop.style.zIndex = '9999';
+          pop.style.textAlign = 'center';
+          pop.style.boxShadow = '0 0 20px rgba(255,0,0,0.7)';
+          pop.style.animation = 'popMiddle 1s ease-out forwards';
+          document.body.appendChild(pop);
+
+          setTimeout(() => pop.remove(), 2500);
+        }
+      }
+
     }
   }
 });
@@ -428,7 +447,6 @@ const camera = new Camera(video, {
   width: 360, height: 480
 });
 
-// Properly initialize with error handling
 Promise.resolve(hands.initialize()).then(() => {
   updateGuide('g1');
   camera.start().catch(err => {
