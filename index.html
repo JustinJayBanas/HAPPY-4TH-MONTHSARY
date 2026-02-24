@@ -28,7 +28,92 @@
     color: white;
   }
 
-  /* Interactive Guide */
+  /* --- NEW: Welcome Screen Styles --- */
+  #welcome-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #2d0a1a 0%, #0a0a12 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.2s;
+    text-align: center;
+  }
+
+  #welcome-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .welcome-content {
+    animation: fadeInScale 2.5s ease-out;
+    z-index: 10;
+  }
+
+  .welcome-title {
+    font-size: 3.5rem;
+    background: linear-gradient(to right, #ff1493, #ff69b4, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+    font-weight: bold;
+    filter: drop-shadow(0 10px 20px rgba(255, 20, 147, 0.3));
+  }
+
+  .welcome-subtitle {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 40px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .enter-btn {
+    padding: 18px 60px;
+    font-size: 1rem;
+    background: transparent;
+    color: white;
+    border: 2px solid var(--primary);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enter-btn:hover {
+    background: var(--primary);
+    box-shadow: 0 0 50px rgba(255, 20, 147, 0.6);
+    transform: scale(1.05);
+  }
+
+  /* Floating background elements for Welcome Screen */
+  .bg-decor {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.2;
+    filter: blur(1px);
+    animation: floatSlow 6s ease-in-out infinite alternate;
+  }
+
+  @keyframes fadeInScale {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes floatSlow {
+    from { transform: translateY(0) rotate(0deg); }
+    to { transform: translateY(-20px) rotate(10deg); }
+  }
+
+  /* --- Existing App Styles --- */
   #guide {
     position: absolute;
     top: 20px;
@@ -101,34 +186,12 @@
     overflow-y: auto;
   }
 
-  /* 3D Flower Elements */
-  .flower {
-    position: absolute;
-    font-size: 50px;
-    pointer-events: none;
-    z-index: 99;
-    filter: drop-shadow(0 0 15px rgba(255,255,255,0.7));
-    animation: bloomFly 3.5s cubic-bezier(0.1, 0, 0.2, 1) forwards;
-  }
-
-  .flower-stem {
-    position: absolute;
-    width: 5px;
-    background: linear-gradient(180deg, rgba(34,177,76,0.9), rgba(34,177,76,0.3));
-    pointer-events: none;
-    z-index: 98;
-    transform-origin: bottom center;
-    border-radius: 3px;
-  }
-
-  .flower-bloom {
-    position: absolute;
-    pointer-events: none;
-    z-index: 99;
-    font-size: 40px;
-    filter: drop-shadow(0 0 10px rgba(255,255,255,0.7));
-    animation: growFlower 2.5s ease-out forwards;
-  }
+  /* 3D Flower/Heart Elements */
+  .flower { position: absolute; font-size: 50px; pointer-events: none; z-index: 99; filter: drop-shadow(0 0 15px rgba(255,255,255,0.7)); animation: bloomFly 3.5s cubic-bezier(0.1, 0, 0.2, 1) forwards; }
+  .flower-stem { position: absolute; width: 5px; background: linear-gradient(180deg, rgba(34,177,76,0.9), rgba(34,177,76,0.3)); pointer-events: none; z-index: 98; transform-origin: bottom center; border-radius: 3px; }
+  .flower-bloom { position: absolute; pointer-events: none; z-index: 99; font-size: 40px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)); animation: growFlower 2.5s ease-out forwards; }
+  .heart-grow { position: absolute; pointer-events: none; z-index: 99; font-size: 50px; filter: drop-shadow(0 0 15px rgba(255,105,180,0.9)); animation: growHeart 2.8s ease-out forwards; }
+  .floating-image { position: absolute; pointer-events: none; z-index: 97; border-radius: 20px; box-shadow: 0 0 35px rgba(255, 20, 147, 0.8); animation: floatImage 4s ease-out forwards; width: 180px; height: 180px; object-fit: cover; border: 4px solid white; }
 
   @keyframes bloomFly {
     0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
@@ -137,54 +200,28 @@
   }
 
   @keyframes growFlower {
-    0% { transform: translateY(0px) scaleY(0.1) scaleX(0) rotateZ(0deg); opacity: 0; }
+    0% { transform: translateY(0px) scaleY(0.1) scaleX(0); opacity: 0; }
     20% { opacity: 1; }
     100% { transform: translateY(var(--my)) scaleY(1) scaleX(1) rotateZ(var(--rt)); opacity: 0; }
   }
 
   @keyframes growStem {
     0% { height: 0; opacity: 0.7; }
-    50% { opacity: 0.9; }
     100% { height: var(--stem-height); opacity: 0; }
   }
 
-  .heart-grow {
-    position: absolute;
-    pointer-events: none;
-    z-index: 99;
-    font-size: 50px;
-    filter: drop-shadow(0 0 15px rgba(255,105,180,0.9));
-    animation: growHeart 2.8s ease-out forwards;
-  }
-
   @keyframes growHeart {
-    0% { transform: translate(-50%, -50%) scale(0) rotateZ(0deg); opacity: 0; }
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
     10% { opacity: 1; }
     100% { transform: translate(-50%, calc(-50% + var(--my))) scale(1.4) rotateZ(var(--rt)); opacity: 0; }
   }
 
-  .floating-image {
-    position: absolute;
-    pointer-events: none;
-    z-index: 97;
-    border-radius: 20px;
-    box-shadow: 0 0 35px rgba(255, 20, 147, 0.8);
-    animation: floatImage 4s ease-out forwards;
-    overflow: hidden;
-    /* Updated Size */
-    width: 180px; 
-    height: 180px;
-    object-fit: cover;
-    border: 4px solid white;
-  }
-
   @keyframes floatImage {
-    0% { transform: translate(-50%, -50%) scale(0) rotateZ(0deg); opacity: 0; }
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
     15% { opacity: 1; }
     100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(1) rotateZ(var(--rt)); opacity: 0; }
   }
 
-  /* Hidden Middle Finger Pop */
   @keyframes popMiddle {
     0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
     50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
@@ -194,6 +231,20 @@
 </head>
 
 <body>
+
+<div id="welcome-screen">
+  <div class="bg-decor" style="top: 15%; left: 10%; font-size: 3rem;">💖</div>
+  <div class="bg-decor" style="top: 70%; left: 20%; font-size: 2rem;">✨</div>
+  <div class="bg-decor" style="top: 25%; right: 15%; font-size: 2.5rem;">🌸</div>
+  <div class="bg-decor" style="bottom: 15%; right: 10%; font-size: 3rem;">💗</div>
+
+  <div class="welcome-content">
+    <div style="font-size: 4rem; margin-bottom: 20px;">🌹</div>
+    <h1 class="welcome-title">Happy Monthsary</h1>
+    <p class="welcome-subtitle">Every second with you is a gift</p>
+    <button class="enter-btn" onclick="startExperience()">Open Your Heart</button>
+  </div>
+</div>
 
 <div id="guide">
   <div class="guide-title">💕 Our Monthsary 💕</div>
@@ -210,7 +261,7 @@
 </div>
 
 <div class="messages">
-  <div class="letter" id="letterText">Waiting for user...</div>
+  <div class="letter" id="letterText">Waiting for you...</div>
 </div>
 
 <script>
@@ -220,13 +271,13 @@ const ctx = canvas.getContext('2d');
 const letterText = document.getElementById('letterText');
 const container = document.getElementById('container');
 
-let stage = 0; // 0: Locked, 1: Palm detected, 2: Heart/Flowers active
-const finalMsg = "Every moment with you feels like a blessing. In this month together, my heart has grown fonder of you. Thank you for being my person. Happy Monthsary, my love. 💕";
-const unlockMsg = "Hello my love, unlock the message in your heart...";
+let stage = 0; 
+const finalMsg = "HELLO MYBABYLABILABS, pag sa mga ganitong tiga gawa ko di ko kayang di agad sabihin sayo HAHAHAAH. Palaging sine-send agad or sinasabi HAAHAH. HAPPY 4TH MONTHSARY MYBABYLABILABSSSS, bawat meet natin ginagayuma ako (yung gayuma worth 50 years ang Efficacy, naka lifetime subscription na nyahahaha). Every meet natin painlove nang painlove eh AHHAAH. I MISS YOU SO BAD this week hehe, pero alam kong busyhon ikaw kaya di man ako masyadong naga para kulit HAHAHA. ILOVEYOUSOMUCHHHHHH MYBABYLABILABSSSS, ikaw ang PALAGI(palaging tama hehe), PALAGING pipiliin at mamahalin hanggang sa huli. MWUAHHHHHHHHHHHHH.";
+const unlockMsg = "Hello MYBABYLABILABS, unlock the message in your heart...";
 const confirmMsg = "You've unlocked my heart. Welcome. 💓";
 let lastImageTime = 0;
 
-// Picture URLs - Add your image paths here
+// Picture URLs
 const pictures = [
   'image/1.1.jfif',
   'image/1.2.jfif',
@@ -237,31 +288,27 @@ const pictures = [
 
 function spawnImage(x, y) {
   if (pictures.length === 0) return;
-  
   const img = document.createElement('img');
   img.className = 'floating-image';
   img.src = pictures[Math.floor(Math.random() * pictures.length)];
-  
-  // Handled size via CSS class .floating-image
   img.style.left = x + 'px';
   img.style.top = y + 'px';
   img.style.setProperty('--mx', (Math.random() - 0.5) * 500 + 'px');
   img.style.setProperty('--my', (Math.random() - 0.8) * 500 + 'px');
   img.style.setProperty('--rt', (Math.random() * 30 - 15) + 'deg');
   document.body.appendChild(img);
-  
   setTimeout(() => img.remove(), 4000);
 }
 
 function updateGuide(activeId) {
   document.querySelectorAll('.guide-item').forEach(el => el.classList.remove('active'));
-  document.getElementById(activeId).classList.add('active');
+  const target = document.getElementById(activeId);
+  if (target) target.classList.add('active');
 }
 
 function spawnFlower(x, y) {
   const flowerEmojis = ['🌻', '🌸', '🌺', '🌷', '💐'];
-  const stemHeight = Math.random() * 80 + 40; // 40-120px stems
-  
+  const stemHeight = Math.random() * 80 + 40;
   const stem = document.createElement('div');
   stem.className = 'flower-stem';
   stem.style.left = x + 'px';
@@ -269,7 +316,6 @@ function spawnFlower(x, y) {
   stem.style.setProperty('--stem-height', stemHeight + 'px');
   stem.style.animation = `growStem 2.5s ease-out forwards`;
   document.body.appendChild(stem);
-  
   const bloom = document.createElement('div');
   bloom.className = 'flower-bloom';
   bloom.innerHTML = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
@@ -278,11 +324,7 @@ function spawnFlower(x, y) {
   bloom.style.setProperty('--my', (-stemHeight) + 'px');
   bloom.style.setProperty('--rt', (Math.random() * 20 - 10) + 'deg');
   document.body.appendChild(bloom);
-  
-  setTimeout(() => {
-    stem.remove();
-    bloom.remove();
-  }, 3000);
+  setTimeout(() => { stem.remove(); bloom.remove(); }, 3000);
 }
 
 function spawnSpark(x, y) {
@@ -301,8 +343,7 @@ function spawnSpark(x, y) {
 
 function spawnHeart(x, y) {
   const heartVariants = ['❤️', '💕', '💖', '💗'];
-  const heartHeight = Math.random() * 120 + 80; // 80-200px growth
-  
+  const heartHeight = Math.random() * 120 + 80;
   const heart = document.createElement('div');
   heart.className = 'heart-grow';
   heart.innerHTML = heartVariants[Math.floor(Math.random() * heartVariants.length)];
@@ -311,14 +352,13 @@ function spawnHeart(x, y) {
   heart.style.setProperty('--my', (-heartHeight) + 'px');
   heart.style.setProperty('--rt', (Math.random() * 30 - 15) + 'deg');
   document.body.appendChild(heart);
-  
   setTimeout(() => heart.remove(), 2800);
 }
 
 function typeMessage() {
   letterText.textContent = "";
   let i = 0;
-  const speed = 60; // Typing speed in ms
+  const speed = 60;
   const timer = setInterval(() => {
     letterText.textContent += finalMsg.charAt(i);
     i++;
@@ -326,6 +366,7 @@ function typeMessage() {
   }, speed);
 }
 
+// MediaPipe Hands Setup
 const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
 hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.8, minTrackingConfidence: 0.8 });
 
@@ -338,7 +379,6 @@ hands.onResults(results => {
     const lm = results.multiHandLandmarks[0];
     const color = stage === 2 ? "#ff69b4" : "#00f2ff";
     
-    // Draw Skeleton with Glow
     ctx.shadowBlur = 15;
     ctx.shadowColor = color;
     ctx.strokeStyle = color;
@@ -357,14 +397,12 @@ hands.onResults(results => {
     const isRingUp = lm[16].y < lm[14].y;
     const isPinkyUp = lm[20].y < lm[18].y;
 
-    // STAGE 0 -> 1: Palm Detection
     if (stage === 0 && isIndexUp && isMiddleUp && isRingUp && isPinkyUp) {
       stage = 1;
       letterText.innerText = unlockMsg;
       updateGuide('g2');
     }
 
-    // STAGE 1 -> 2: Finger Heart Detection
     if (stage === 1) {
       const heartDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
       if (heartDist < 0.04 && !isMiddleUp) {
@@ -376,68 +414,49 @@ hands.onResults(results => {
       }
     }
 
-    // STAGE 2: Peace Sign (Flowers) - Sprouting Flowers
     if (stage === 2) {
       if (isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp) {
         for (let i = 0; i < 3; i++) {
-          if (Math.random() > 0.4) {
-            spawnFlower(indexX + (Math.random()-0.5)*50, indexY + (Math.random()-0.5)*50);
-          }
+          if (Math.random() > 0.4) spawnFlower(indexX + (Math.random()-0.5)*50, indexY + (Math.random()-0.5)*50);
         }
         updateGuide('g3');
       }
 
-      // Thumbs Up (Show Floating Images)
       const thumbUpCheck = lm[4].y < lm[2].y && !isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp;
       if (thumbUpCheck) {
         const now = Date.now();
         if (now - lastImageTime > 800) {
-          for (let i = 0; i < 2; i++) {
-            spawnImage(indexX + (Math.random()-0.5)*40, indexY + (Math.random()-0.5)*40);
-          }
+          for (let i = 0; i < 2; i++) spawnImage(indexX + (Math.random()-0.5)*40, indexY + (Math.random()-0.5)*40);
           lastImageTime = now;
         }
         updateGuide('g4');
       }
 
-      // OK Sign
       const okDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
       if (okDist < 0.05 && isMiddleUp && isRingUp && isPinkyUp) {
         if (Math.random() > 0.75) spawnHeart(indexX, indexY);
         updateGuide('g6');
       }
 
-      // Wave gesture
       if (isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp) {
         if (Math.random() > 0.9) spawnSpark(indexX, indexY);
       }
 
-      // Hidden Middle Finger Gesture
       const isOnlyMiddleUp = !isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp;
       if (isOnlyMiddleUp) {
         if (!document.getElementById('middlePop')) {
           const pop = document.createElement('div');
           pop.id = 'middlePop';
           pop.innerText = "Huli, tig try pa talaga HAHAHAHA";
-          pop.style.position = 'fixed';
-          pop.style.top = '50%';
-          pop.style.left = '50%';
-          pop.style.transform = 'translate(-50%, -50%)';
-          pop.style.background = 'rgba(255,0,0,0.9)';
-          pop.style.color = 'white';
-          pop.style.fontSize = '1.8rem';
-          pop.style.padding = '25px 40px';
-          pop.style.borderRadius = '25px';
-          pop.style.zIndex = '9999';
-          pop.style.textAlign = 'center';
-          pop.style.boxShadow = '0 0 20px rgba(255,0,0,0.7)';
-          pop.style.animation = 'popMiddle 1s ease-out forwards';
+          pop.style.position = 'fixed'; pop.style.top = '50%'; pop.style.left = '50%';
+          pop.style.transform = 'translate(-50%, -50%)'; pop.style.background = 'rgba(255,0,0,0.9)';
+          pop.style.color = 'white'; pop.style.fontSize = '1.8rem'; pop.style.padding = '25px 40px';
+          pop.style.borderRadius = '25px'; pop.style.zIndex = '9999'; pop.style.textAlign = 'center';
+          pop.style.boxShadow = '0 0 20px rgba(255,0,0,0.7)'; pop.style.animation = 'popMiddle 1s ease-out forwards';
           document.body.appendChild(pop);
-
           setTimeout(() => pop.remove(), 2500);
         }
       }
-
     }
   }
 });
@@ -447,17 +466,21 @@ const camera = new Camera(video, {
   width: 360, height: 480
 });
 
-Promise.resolve(hands.initialize()).then(() => {
-  updateGuide('g1');
-  camera.start().catch(err => {
-    console.error("Camera access denied:", err);
-    letterText.innerText = "Camera access denied. Please enable camera permissions.";
+// START FUNCTION CALLED BY BUTTON
+function startExperience() {
+  document.getElementById('welcome-screen').classList.add('hidden');
+  
+  Promise.resolve(hands.initialize()).then(() => {
+    updateGuide('g1');
+    camera.start().catch(err => {
+      console.error("Camera access denied:", err);
+      letterText.innerText = "Camera access denied. Please enable camera permissions.";
+    });
+  }).catch(err => {
+    console.error("Hands initialization failed:", err);
+    letterText.innerText = "Failed to load hand detection. Please refresh.";
   });
-}).catch(err => {
-  console.error("Hands initialization failed:", err);
-  letterText.innerText = "Failed to load hand detection. Please refresh.";
-});
+}
 </script>
 </body>
 </html>
-
