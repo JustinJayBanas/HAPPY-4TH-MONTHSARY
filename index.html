@@ -9,283 +9,199 @@
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 
 <style>
-:root {
-  --primary: #ff1493;
-  --secondary: #ff69b4;
-  --bg: #0a0a12;
-}
+  :root {
+    --primary: #ff1493;
+    --secondary: #ff69b4;
+    --bg: #0a0a12;
+  }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  overflow: hidden;
-  color: white;
-}
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    color: white;
+  }
 
-/* ===================== WELCOME SCREEN ===================== */
-#welcomeScreen {
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at top, #ff69b4, #0a0a12 70%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  animation: fadeIn 1.5s ease;
-}
+  /* Interactive Guide */
+  #guide {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.15);
+    z-index: 100;
+    width: 250px;
+  }
+  .guide-title { font-size: 1rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; color: #ff1493; opacity: 0.9; font-weight: bold; }
+  .guide-item { font-size: 1.1rem; margin-bottom: 15px; opacity: 0.4; transition: 0.4s; display: flex; align-items: center; gap: 12px; }
+  .guide-item.active { opacity: 1; color: white; transform: translateX(-5px); }
+  .guide-item span { font-size: 1.5rem; }
 
-.welcome-card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(25px);
-  border-radius: 45px;
-  padding: 60px 55px;
-  text-align: center;
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 0 120px rgba(255,105,180,0.7);
-  animation: pulseGlow 3s infinite;
-}
+  .camera-container {
+    position: relative;
+    width: 600px;
+    max-width: 95vw;
+    border-radius: 45px;
+    overflow: hidden;
+    box-shadow: 0 0 80px rgba(0, 242, 255, 0.25);
+    transition: all 1.5s ease;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
 
-.welcome-card h1 {
-  font-size: 2.8rem;
-  margin-bottom: 20px;
-}
+  .camera-container.unlocked {
+    box-shadow: 0 0 100px rgba(255, 105, 180, 0.35);
+  }
 
-.welcome-card p {
-  font-size: 1.3rem;
-  line-height: 1.7;
-  margin-bottom: 35px;
-  opacity: 0.95;
-}
+  video, canvas {
+    width: 100%;
+    transform: scaleX(-1);
+    display: block;
+    border-radius: 45px;
+  }
 
-.welcome-card button {
-  background: linear-gradient(135deg, #ff1493, #ff69b4);
-  border: none;
-  color: white;
-  padding: 18px 45px;
-  font-size: 1.2rem;
-  border-radius: 45px;
-  cursor: pointer;
-  box-shadow: 0 0 35px rgba(255,20,147,0.7);
-  transition: 0.3s;
-}
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
 
-.welcome-card button:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 60px rgba(255,20,147,0.9);
-}
+  .messages {
+    margin-top: 35px;
+    width: 90%;
+    max-width: 700px;
+    text-align: center;
+    z-index: 10;
+  }
 
-@keyframes pulseGlow {
-  0%,100% { box-shadow: 0 0 70px rgba(255,105,180,0.45); }
-  50% { box-shadow: 0 0 140px rgba(255,105,180,0.9); }
-}
-@keyframes fadeIn { from {opacity:0} to {opacity:1} }
-@keyframes fadeOut { to {opacity:0; pointer-events:none} }
+  .letter {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px;
+    padding: 30px;
+    font-size: 1.3rem;
+    line-height: 1.8;
+    min-height: 100px;
+    max-height: 400px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    transition: all 0.5s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    overflow-y: auto;
+  }
 
-/* ===================== GUIDE ===================== */
-#guide {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(15px);
-  padding: 30px;
-  border-radius: 25px;
-  border: 1px solid rgba(255,255,255,0.15);
-  z-index: 100;
-  width: 250px;
-}
+  /* 3D Flower Elements */
+  .flower {
+    position: absolute;
+    font-size: 50px;
+    pointer-events: none;
+    z-index: 99;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.7));
+    animation: bloomFly 3.5s cubic-bezier(0.1, 0, 0.2, 1) forwards;
+  }
 
-.guide-title {
-  font-size: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 15px;
-  color: #ff1493;
-  font-weight: bold;
-}
+  .flower-stem {
+    position: absolute;
+    width: 5px;
+    background: linear-gradient(180deg, rgba(34,177,76,0.9), rgba(34,177,76,0.3));
+    pointer-events: none;
+    z-index: 98;
+    transform-origin: bottom center;
+    border-radius: 3px;
+  }
 
-.guide-item {
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-  opacity: 0.4;
-  transition: 0.4s;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+  .flower-bloom {
+    position: absolute;
+    pointer-events: none;
+    z-index: 99;
+    font-size: 40px;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.7));
+    animation: growFlower 2.5s ease-out forwards;
+  }
 
-.guide-item.active {
-  opacity: 1;
-  transform: translateX(-5px);
-}
+  @keyframes bloomFly {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
+    15% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(15deg); }
+    100% { transform: translate(var(--mx), var(--my)) scale(2.2) rotate(var(--rt)); opacity: 0; }
+  }
 
-/* ===================== CAMERA ===================== */
-.camera-container {
-  position: relative;
-  width: 600px;
-  max-width: 95vw;
-  border-radius: 45px;
-  overflow: hidden;
-  box-shadow: 0 0 80px rgba(0,242,255,0.25);
-  transition: all 1.5s ease;
-  border: 1px solid rgba(255,255,255,0.15);
-}
+  @keyframes growFlower {
+    0% { transform: translateY(0px) scaleY(0.1) scaleX(0) rotateZ(0deg); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateY(var(--my)) scaleY(1) scaleX(1) rotateZ(var(--rt)); opacity: 0; }
+  }
 
-.camera-container.unlocked {
-  box-shadow: 0 0 120px rgba(255,105,180,0.45);
-}
+  @keyframes growStem {
+    0% { height: 0; opacity: 0.7; }
+    50% { opacity: 0.9; }
+    100% { height: var(--stem-height); opacity: 0; }
+  }
 
-video, canvas {
-  width: 100%;
-  transform: scaleX(-1);
-  display: block;
-  border-radius: 45px;
-}
+  .heart-grow {
+    position: absolute;
+    pointer-events: none;
+    z-index: 99;
+    font-size: 50px;
+    filter: drop-shadow(0 0 15px rgba(255,105,180,0.9));
+    animation: growHeart 2.8s ease-out forwards;
+  }
 
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-}
+  @keyframes growHeart {
+    0% { transform: translate(-50%, -50%) scale(0) rotateZ(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    100% { transform: translate(-50%, calc(-50% + var(--my))) scale(1.4) rotateZ(var(--rt)); opacity: 0; }
+  }
 
-/* ===================== MESSAGE ===================== */
-.messages {
-  margin-top: 35px;
-  width: 90%;
-  max-width: 700px;
-  text-align: center;
-  z-index: 10;
-}
+  .floating-image {
+    position: absolute;
+    pointer-events: none;
+    z-index: 97;
+    border-radius: 20px;
+    box-shadow: 0 0 35px rgba(255, 20, 147, 0.8);
+    animation: floatImage 4s ease-out forwards;
+    overflow: hidden;
+    /* Updated Size */
+    width: 180px; 
+    height: 180px;
+    object-fit: cover;
+    border: 4px solid white;
+  }
 
-.letter {
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(25px);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 30px;
-  padding: 30px;
-  font-size: 1.3rem;
-  line-height: 1.8;
-  min-height: 100px;
-  max-height: 400px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-  overflow-y: auto;
-}
+  @keyframes floatImage {
+    0% { transform: translate(-50%, -50%) scale(0) rotateZ(0deg); opacity: 0; }
+    15% { opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(1) rotateZ(var(--rt)); opacity: 0; }
+  }
 
-/* ===================== EFFECTS ===================== */
-.flower {
-  position: absolute;
-  font-size: 50px;
-  pointer-events: none;
-  z-index: 99;
-  filter: drop-shadow(0 0 15px rgba(255,255,255,0.7));
-  animation: bloomFly 3.5s cubic-bezier(0.1, 0, 0.2, 1) forwards;
-}
-
-.flower-stem {
-  position: absolute;
-  width: 5px;
-  background: linear-gradient(180deg, rgba(34,177,76,0.9), rgba(34,177,76,0.3));
-  pointer-events: none;
-  z-index: 98;
-  transform-origin: bottom center;
-  border-radius: 3px;
-}
-
-.flower-bloom {
-  position: absolute;
-  pointer-events: none;
-  z-index: 99;
-  font-size: 40px;
-  filter: drop-shadow(0 0 10px rgba(255,255,255,0.7));
-  animation: growFlower 2.5s ease-out forwards;
-}
-
-@keyframes bloomFly {
-  0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); opacity: 0; }
-  15% { opacity: 1; transform: translate(-50%, -50%) scale(1.3) rotate(15deg); }
-  100% { transform: translate(var(--mx), var(--my)) scale(2.2) rotate(var(--rt)); opacity: 0; }
-}
-
-@keyframes growFlower {
-  0% { transform: translateY(0px) scaleY(0.1) scaleX(0); opacity: 0; }
-  20% { opacity: 1; }
-  100% { transform: translateY(var(--my)) scaleY(1) scaleX(1); opacity: 0; }
-}
-
-@keyframes growStem {
-  0% { height: 0; opacity: 0.7; }
-  100% { height: var(--stem-height); opacity: 0; }
-}
-
-.heart-grow {
-  position: absolute;
-  pointer-events: none;
-  z-index: 99;
-  font-size: 50px;
-  filter: drop-shadow(0 0 15px rgba(255,105,180,0.9));
-  animation: growHeart 2.8s ease-out forwards;
-}
-
-@keyframes growHeart {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  10% { opacity: 1; }
-  100% { transform: translate(-50%, calc(-50% + var(--my))) scale(1.4); opacity: 0; }
-}
-
-.floating-image {
-  position: absolute;
-  pointer-events: none;
-  z-index: 97;
-  border-radius: 20px;
-  box-shadow: 0 0 35px rgba(255,20,147,0.8);
-  animation: floatImage 4s ease-out forwards;
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
-  border: 4px solid white;
-}
-
-@keyframes floatImage {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  15% { opacity: 1; }
-  100% { transform: translate(calc(-50% + var(--mx)), calc(-50% + var(--my))) scale(1); opacity: 0; }
-}
-
-/* ===================== MIDDLE FINGER ===================== */
-@keyframes popMiddle {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
-}
+  /* Hidden Middle Finger Pop */
+  @keyframes popMiddle {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  }
 </style>
 </head>
 
 <body>
 
-<!-- ===================== WELCOME ===================== -->
-<div id="welcomeScreen">
-  <div class="welcome-card">
-    <h1>Happy Monthsary 💖</h1>
-    <p>Every love story is beautiful,<br>but ours is my favorite.</p>
-    <button id="startBtn">Start Our Story 💕</button>
-  </div>
-</div>
-
-<!-- ===================== GUIDE ===================== -->
 <div id="guide">
   <div class="guide-title">💕 Our Monthsary 💕</div>
-  <div class="guide-item" id="g1">✋ Show Your Palm</div>
-  <div class="guide-item" id="g2">🫰 Make a Heart</div>
-  <div class="guide-item" id="g3">✌️ Grow Flowers</div>
-  <div class="guide-item" id="g4">👍 Give Love</div>
-  <div class="guide-item" id="g6">👌 Show Affection</div>
+  <div class="guide-item" id="g1"><span>✋</span> Show Your Palm</div>
+  <div class="guide-item" id="g2"><span>🫰</span> Make a Heart</div>
+  <div class="guide-item" id="g3"><span>✌️</span> Grow Flowers</div>
+  <div class="guide-item" id="g4"><span>👍</span> Give Love</div>
+  <div class="guide-item" id="g6"><span>👌</span> Show Affection</div>
 </div>
 
 <div class="camera-container" id="container">
@@ -294,26 +210,23 @@ canvas {
 </div>
 
 <div class="messages">
-  <div class="letter" id="letterText">Waiting for you… 💕</div>
+  <div class="letter" id="letterText">Waiting for user...</div>
 </div>
 
 <script>
-/* ===================== ORIGINAL JS (UNCHANGED) ===================== */
 const video = document.getElementById('video');
 const canvas = document.getElementById('overlay');
 const ctx = canvas.getContext('2d');
 const letterText = document.getElementById('letterText');
 const container = document.getElementById('container');
 
-let stage = 0;
-let lastImageTime = 0;
-
-const finalMsg =
-"Every moment with you feels like a blessing. In this month together, my heart has grown fonder of you. Thank you for being my person. Happy Monthsary, my love. 💕";
-
+let stage = 0; // 0: Locked, 1: Palm detected, 2: Heart/Flowers active
+const finalMsg = "Every moment with you feels like a blessing. In this month together, my heart has grown fonder of you. Thank you for being my person. Happy Monthsary, my love. 💕";
 const unlockMsg = "Hello my love, unlock the message in your heart...";
 const confirmMsg = "You've unlocked my heart. Welcome. 💓";
+let lastImageTime = 0;
 
+// Picture URLs - Add your image paths here
 const pictures = [
   'image/1.1.jfif',
   'image/1.2.jfif',
@@ -322,156 +235,229 @@ const pictures = [
   'image/1.5.jfif'
 ];
 
-function updateGuide(id){
-  document.querySelectorAll('.guide-item').forEach(el=>el.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+function spawnImage(x, y) {
+  if (pictures.length === 0) return;
+  
+  const img = document.createElement('img');
+  img.className = 'floating-image';
+  img.src = pictures[Math.floor(Math.random() * pictures.length)];
+  
+  // Handled size via CSS class .floating-image
+  img.style.left = x + 'px';
+  img.style.top = y + 'px';
+  img.style.setProperty('--mx', (Math.random() - 0.5) * 500 + 'px');
+  img.style.setProperty('--my', (Math.random() - 0.8) * 500 + 'px');
+  img.style.setProperty('--rt', (Math.random() * 30 - 15) + 'deg');
+  document.body.appendChild(img);
+  
+  setTimeout(() => img.remove(), 4000);
 }
 
-function typeMessage(){
+function updateGuide(activeId) {
+  document.querySelectorAll('.guide-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(activeId).classList.add('active');
+}
+
+function spawnFlower(x, y) {
+  const flowerEmojis = ['🌻', '🌸', '🌺', '🌷', '💐'];
+  const stemHeight = Math.random() * 80 + 40; // 40-120px stems
+  
+  const stem = document.createElement('div');
+  stem.className = 'flower-stem';
+  stem.style.left = x + 'px';
+  stem.style.top = (y + stemHeight) + 'px';
+  stem.style.setProperty('--stem-height', stemHeight + 'px');
+  stem.style.animation = `growStem 2.5s ease-out forwards`;
+  document.body.appendChild(stem);
+  
+  const bloom = document.createElement('div');
+  bloom.className = 'flower-bloom';
+  bloom.innerHTML = flowerEmojis[Math.floor(Math.random() * flowerEmojis.length)];
+  bloom.style.left = x + 'px';
+  bloom.style.top = y + 'px';
+  bloom.style.setProperty('--my', (-stemHeight) + 'px');
+  bloom.style.setProperty('--rt', (Math.random() * 20 - 10) + 'deg');
+  document.body.appendChild(bloom);
+  
+  setTimeout(() => {
+    stem.remove();
+    bloom.remove();
+  }, 3000);
+}
+
+function spawnSpark(x, y) {
+  const s = document.createElement('div');
+  s.className = 'flower';
+  s.innerHTML = '✨';
+  s.style.left = x + 'px';
+  s.style.top = y + 'px';
+  s.style.setProperty('--mx', (Math.random()-0.5)*400 + 'px');
+  s.style.setProperty('--my', (Math.random()-0.5)*400 + 'px');
+  s.style.setProperty('--rt', (Math.random()*360) + 'deg');
+  s.style.fontSize = '20px';
+  document.body.appendChild(s);
+  setTimeout(() => s.remove(), 2500);
+}
+
+function spawnHeart(x, y) {
+  const heartVariants = ['❤️', '💕', '💖', '💗'];
+  const heartHeight = Math.random() * 120 + 80; // 80-200px growth
+  
+  const heart = document.createElement('div');
+  heart.className = 'heart-grow';
+  heart.innerHTML = heartVariants[Math.floor(Math.random() * heartVariants.length)];
+  heart.style.left = x + 'px';
+  heart.style.top = y + 'px';
+  heart.style.setProperty('--my', (-heartHeight) + 'px');
+  heart.style.setProperty('--rt', (Math.random() * 30 - 15) + 'deg');
+  document.body.appendChild(heart);
+  
+  setTimeout(() => heart.remove(), 2800);
+}
+
+function typeMessage() {
   letterText.textContent = "";
   let i = 0;
-  const timer = setInterval(()=>{
-    letterText.textContent += finalMsg.charAt(i++);
-    if(i >= finalMsg.length) clearInterval(timer);
-  },60);
+  const speed = 60; // Typing speed in ms
+  const timer = setInterval(() => {
+    letterText.textContent += finalMsg.charAt(i);
+    i++;
+    if (i >= finalMsg.length) clearInterval(timer);
+  }, speed);
 }
 
-/* ===== SPAWN FUNCTIONS (UNCHANGED) ===== */
-function spawnImage(x,y){
-  const img=document.createElement('img');
-  img.className='floating-image';
-  img.src=pictures[Math.floor(Math.random()*pictures.length)];
-  img.style.left=x+'px';
-  img.style.top=y+'px';
-  img.style.setProperty('--mx',(Math.random()-0.5)*500+'px');
-  img.style.setProperty('--my',(Math.random()-0.8)*500+'px');
-  document.body.appendChild(img);
-  setTimeout(()=>img.remove(),4000);
-}
+const hands = new Hands({ locateFile: (f) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
+hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.8, minTrackingConfidence: 0.8 });
 
-function spawnFlower(x,y){
-  const stemHeight=Math.random()*80+40;
-  const stem=document.createElement('div');
-  stem.className='flower-stem';
-  stem.style.left=x+'px';
-  stem.style.top=(y+stemHeight)+'px';
-  stem.style.setProperty('--stem-height',stemHeight+'px');
-  stem.style.animation='growStem 2.5s ease-out forwards';
-  document.body.appendChild(stem);
-
-  const bloom=document.createElement('div');
-  bloom.className='flower-bloom';
-  bloom.innerHTML='🌸';
-  bloom.style.left=x+'px';
-  bloom.style.top=y+'px';
-  bloom.style.setProperty('--my',(-stemHeight)+'px');
-  document.body.appendChild(bloom);
-
-  setTimeout(()=>{stem.remove();bloom.remove()},3000);
-}
-
-function spawnHeart(x,y){
-  const heart=document.createElement('div');
-  heart.className='heart-grow';
-  heart.innerHTML='❤️';
-  heart.style.left=x+'px';
-  heart.style.top=y+'px';
-  heart.style.setProperty('--my',-(Math.random()*120+80)+'px');
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),2800);
-}
-
-/* ===================== HAND TRACKING ===================== */
-const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${f}` });
-hands.setOptions({
-  maxNumHands: 1,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.8,
-  minTrackingConfidence: 0.8
-});
-
-hands.onResults(results=>{
+hands.onResults(results => {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if(!results.multiHandLandmarks) return;
+  if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+    const lm = results.multiHandLandmarks[0];
+    const color = stage === 2 ? "#ff69b4" : "#00f2ff";
+    
+    // Draw Skeleton with Glow
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 4;
+    [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],[0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20]].forEach(([i,j])=>{
+      ctx.beginPath(); ctx.moveTo(lm[i].x*canvas.width, lm[i].y*canvas.height);
+      ctx.lineTo(lm[j].x*canvas.width, lm[j].y*canvas.height); ctx.stroke();
+    });
 
-  const lm = results.multiHandLandmarks[0];
+    const rect = canvas.getBoundingClientRect();
+    const indexX = rect.left + (1 - lm[8].x) * rect.width;
+    const indexY = rect.top + lm[8].y * rect.height;
 
-  ctx.strokeStyle = stage===2 ? "#ff69b4" : "#00f2ff";
-  ctx.lineWidth = 4;
-  ctx.shadowBlur = 15;
+    const isIndexUp = lm[8].y < lm[6].y;
+    const isMiddleUp = lm[12].y < lm[10].y;
+    const isRingUp = lm[16].y < lm[14].y;
+    const isPinkyUp = lm[20].y < lm[18].y;
 
-  [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[0,9],[9,10],[10,11],[11,12],[0,13],[13,14],[14,15],[15,16],[0,17],[17,18],[18,19],[19,20]]
-  .forEach(([i,j])=>{
-    ctx.beginPath();
-    ctx.moveTo(lm[i].x*canvas.width, lm[i].y*canvas.height);
-    ctx.lineTo(lm[j].x*canvas.width, lm[j].y*canvas.height);
-    ctx.stroke();
-  });
-
-  const isIndexUp = lm[8].y < lm[6].y;
-  const isMiddleUp = lm[12].y < lm[10].y;
-  const isRingUp = lm[16].y < lm[14].y;
-  const isPinkyUp = lm[20].y < lm[18].y;
-
-  const rect = canvas.getBoundingClientRect();
-  const x = rect.left + (1 - lm[8].x) * rect.width;
-  const y = rect.top + lm[8].y * rect.height;
-
-  if(stage===0 && isIndexUp && isMiddleUp && isRingUp && isPinkyUp){
-    stage=1;
-    letterText.innerText=unlockMsg;
-    updateGuide('g2');
-  }
-
-  if(stage===1){
-    if(Math.hypot(lm[4].x-lm[8].x,lm[4].y-lm[8].y)<0.04){
-      stage=2;
-      container.classList.add('unlocked');
-      letterText.innerText=confirmMsg;
-      setTimeout(typeMessage,800);
-      updateGuide('g3');
-    }
-  }
-
-  if(stage===2){
-    if(isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp){
-      spawnFlower(x,y);
+    // STAGE 0 -> 1: Palm Detection
+    if (stage === 0 && isIndexUp && isMiddleUp && isRingUp && isPinkyUp) {
+      stage = 1;
+      letterText.innerText = unlockMsg;
+      updateGuide('g2');
     }
 
-    if(lm[4].y < lm[2].y && !isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp){
-      if(Date.now()-lastImageTime>800){
-        spawnImage(x,y);
-        lastImageTime=Date.now();
-        updateGuide('g4');
+    // STAGE 1 -> 2: Finger Heart Detection
+    if (stage === 1) {
+      const heartDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
+      if (heartDist < 0.04 && !isMiddleUp) {
+        stage = 2;
+        container.classList.add('unlocked');
+        letterText.innerText = confirmMsg;
+        setTimeout(() => typeMessage(), 800);
+        updateGuide('g3');
       }
     }
 
-    if(Math.hypot(lm[4].x-lm[8].x,lm[4].y-lm[8].y)<0.05 && isMiddleUp && isRingUp && isPinkyUp){
-      spawnHeart(x,y);
-      updateGuide('g6');
+    // STAGE 2: Peace Sign (Flowers) - Sprouting Flowers
+    if (stage === 2) {
+      if (isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp) {
+        for (let i = 0; i < 3; i++) {
+          if (Math.random() > 0.4) {
+            spawnFlower(indexX + (Math.random()-0.5)*50, indexY + (Math.random()-0.5)*50);
+          }
+        }
+        updateGuide('g3');
+      }
+
+      // Thumbs Up (Show Floating Images)
+      const thumbUpCheck = lm[4].y < lm[2].y && !isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp;
+      if (thumbUpCheck) {
+        const now = Date.now();
+        if (now - lastImageTime > 800) {
+          for (let i = 0; i < 2; i++) {
+            spawnImage(indexX + (Math.random()-0.5)*40, indexY + (Math.random()-0.5)*40);
+          }
+          lastImageTime = now;
+        }
+        updateGuide('g4');
+      }
+
+      // OK Sign
+      const okDist = Math.hypot(lm[4].x - lm[8].x, lm[4].y - lm[8].y);
+      if (okDist < 0.05 && isMiddleUp && isRingUp && isPinkyUp) {
+        if (Math.random() > 0.75) spawnHeart(indexX, indexY);
+        updateGuide('g6');
+      }
+
+      // Wave gesture
+      if (isIndexUp && !isMiddleUp && !isRingUp && !isPinkyUp) {
+        if (Math.random() > 0.9) spawnSpark(indexX, indexY);
+      }
+
+      // Hidden Middle Finger Gesture
+      const isOnlyMiddleUp = !isIndexUp && isMiddleUp && !isRingUp && !isPinkyUp;
+      if (isOnlyMiddleUp) {
+        if (!document.getElementById('middlePop')) {
+          const pop = document.createElement('div');
+          pop.id = 'middlePop';
+          pop.innerText = "Huli, tig try pa talaga HAHAHAHA";
+          pop.style.position = 'fixed';
+          pop.style.top = '50%';
+          pop.style.left = '50%';
+          pop.style.transform = 'translate(-50%, -50%)';
+          pop.style.background = 'rgba(255,0,0,0.9)';
+          pop.style.color = 'white';
+          pop.style.fontSize = '1.8rem';
+          pop.style.padding = '25px 40px';
+          pop.style.borderRadius = '25px';
+          pop.style.zIndex = '9999';
+          pop.style.textAlign = 'center';
+          pop.style.boxShadow = '0 0 20px rgba(255,0,0,0.7)';
+          pop.style.animation = 'popMiddle 1s ease-out forwards';
+          document.body.appendChild(pop);
+
+          setTimeout(() => pop.remove(), 2500);
+        }
+      }
+
     }
   }
 });
 
-const camera = new Camera(video,{
-  onFrame: async()=>{ await hands.send({image:video}); },
-  width: 360,
-  height: 480
+const camera = new Camera(video, {
+  onFrame: async () => { await hands.send({image: video}); },
+  width: 360, height: 480
 });
 
-/* ===================== START BUTTON ===================== */
-document.getElementById('startBtn').onclick = ()=>{
-  document.getElementById('welcomeScreen').style.animation='fadeOut 1s forwards';
-  setTimeout(()=>{
-    document.getElementById('welcomeScreen').remove();
-    updateGuide('g1');
-    camera.start();
-  },900);
-};
+Promise.resolve(hands.initialize()).then(() => {
+  updateGuide('g1');
+  camera.start().catch(err => {
+    console.error("Camera access denied:", err);
+    letterText.innerText = "Camera access denied. Please enable camera permissions.";
+  });
+}).catch(err => {
+  console.error("Hands initialization failed:", err);
+  letterText.innerText = "Failed to load hand detection. Please refresh.";
+});
 </script>
-
 </body>
 </html>
+
