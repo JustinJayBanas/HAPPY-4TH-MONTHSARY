@@ -12,7 +12,7 @@
   :root {
     --primary: #ff1493;
     --secondary: #ff69b4;
-    --bg: #0a0a12;
+    --bg: #100a12;
   }
 
   body {
@@ -118,7 +118,7 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255,255,255,0.05);
+    background: rgba(137, 55, 55, 0.05);
     backdrop-filter: blur(15px);
     padding: 30px;
     border-radius: 25px;
@@ -174,12 +174,12 @@
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 30px;
     padding: 30px;
-    font-size: 1.3rem;
+    font-size: 2rem;
     line-height: 1.8;
     min-height: 100px;
     max-height: 400px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-    transition: all 0.1s ease;
+    transition: all 0.01s ease;
     word-wrap: break-word;
     overflow-wrap: break-word;
     white-space: normal;
@@ -358,7 +358,7 @@ function spawnHeart(x, y) {
 function typeMessage() {
   letterText.textContent = "";
   let i = 0;
-  const speed = 60;
+  const speed = 20;
   const timer = setInterval(() => {
     letterText.textContent += finalMsg.charAt(i);
     i++;
@@ -484,5 +484,3 @@ function startExperience() {
 </script>
 </body>
 </html>
-
-
